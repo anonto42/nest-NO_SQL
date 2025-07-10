@@ -88,13 +88,6 @@ export class User extends Document
   })
   resetPasswordTokenExpiry?: Date;
 
-
-  async hashPassword(): Promise<void> 
-  {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
-  };
-
   async comparePassword(enteredPassword: string): Promise<boolean> 
   {
     return await bcrypt.compare(enteredPassword, this.password);
@@ -106,7 +99,8 @@ export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
-    await this.hashPassword();
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
   }
   next();
 });
