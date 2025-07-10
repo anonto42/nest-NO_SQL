@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { AllExceptionsFilter } from 'common/filters/all-exceptions.filter';
+import { ResponseInterceptor } from 'common/Interceptor/response.interceptor';
 
 async function bootstrap() {
 
@@ -14,6 +15,8 @@ async function bootstrap() {
   const port = configService.get<number>('PORT') ?? 3000;
 
   app.useGlobalFilters(new AllExceptionsFilter());
+
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   await app.listen(port);
 
