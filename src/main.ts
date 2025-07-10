@@ -14,7 +14,7 @@ async function bootstrap() {
   const port = configService.get<number>('PORT') ?? 3000;
 
   app.useGlobalFilters(new AllExceptionsFilter());
-  
+
   await app.listen(port);
 
   console.log('\x1b[1m\x1b[33m%s\x1b[0m', `Server running on port ${port}`)
