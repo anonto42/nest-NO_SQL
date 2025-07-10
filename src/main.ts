@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { AllExceptionsFilter } from 'common/filters/all-exceptions.filter';
 
 async function bootstrap() {
 
@@ -10,7 +11,9 @@ async function bootstrap() {
   
   app.setGlobalPrefix('api');
 
-  const port = configService.get<number>('PORT') ?? 3000
+  const port = configService.get<number>('PORT') ?? 3000;
+
+  app.useGlobalFilters(new AllExceptionsFilter());
   
   await app.listen(port);
 
