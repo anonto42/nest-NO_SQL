@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { AllExceptionsFilter } from 'src/common/filters/all-exceptions.filter';
 import { ResponseInterceptor } from 'src/common/Interceptor/response.interceptor';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
 
@@ -34,6 +35,14 @@ async function bootstrap() {
     }
   ));
   
+
+  // Security
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+  })
+  app.use(helmet());
+
   // Run the server 
   await app.listen(port);
   console.log('\x1b[1m\x1b[33m%s\x1b[0m', `Server is running on port ${port}`)
