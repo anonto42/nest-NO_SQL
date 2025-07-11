@@ -6,9 +6,14 @@ import { UtilsService } from './common/utils/utils.service';
 import { TemplatesService } from './common/templates/templates.service';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 10,
+    }]),
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
