@@ -13,23 +13,27 @@ export class UtilsService
       private readonly configService: ConfigService,
       private readonly templatesService: TemplatesService
   ) {
+    try {
       this.transporter = nodemailer.createTransport({
-          host: this.configService.get('MAIL_HOST'),
-          port: this.configService.get('MAIL_PORT'),
+          host: this.configService.get('EMAIL_HOST'),
+          port: this.configService.get('EMAIL_PORT'),
           secure: false, 
           auth: {
-            user: this.configService.get('MAIL_USER'),
-            pass: this.configService.get('MAIL_PASS'),
+            user: this.configService.get('EMAIL_USER'),
+            pass: this.configService.get('EMAIL_PASS'),
           },
       })
+    } catch (error) {
+      throw new HttpException('Failed to create transporter', HttpStatus.BAD_REQUEST);
+    }
   }
 
-  async sendMail(to: string, otp: string, subject: string = 'Your One-Time Password (OTP)', message: string = 'Here is your OTP for verification:'): Promise<void> 
+  async sendMail(to: string, otp: number, subject: string = 'Your One-Time Password (OTP)', message: string = 'Here is your OTP for verification:'): Promise<void> 
   {
     const htmlTemplate = this.templatesService.generateOtpTemplate(otp, subject, message);
 
     const mailOptions = {
-      from: this.configService.get('MAIL_FROM'), 
+      from: this.configService.get('EMAIL_FROM'), 
       to, 
       subject, 
       html: htmlTemplate,
@@ -41,10 +45,21 @@ export class UtilsService
       return info;
     } catch (error) {
       console.error('Error sending email:', error);
-      throw new Error('Failed to send email');
+      throw new HttpException('Failed to send email', HttpStatus.BAD_REQUEST);
     }
   }
 
+  generateOtp(length: number): number 
+  {
+    if (length < 1) {
+      throw new HttpException('Length must be a positive integer', HttpStatus.BAD_REQUEST);
+    }
+  
+    const min = Math.pow(10, length - 1); 
+    const max = Math.pow(10, length) - 1; 
+    
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
   createAccessToken(payload: {id: string, role: string}): string
   {

@@ -16,7 +16,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         limit: 10,
       },
     ]),
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env" }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
