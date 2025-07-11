@@ -3,6 +3,7 @@ import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import { TemplatesService } from 'src/common/templates/templates.service';
 import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UtilsService 
@@ -47,6 +48,16 @@ export class UtilsService
       console.error('Error sending email:', error);
       throw new HttpException('Failed to send email', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  ganarateHash(value: string): string
+  {
+    return bcrypt.hashSync(value, 10);
+  }
+
+  compareHash(value: string, hash: string): boolean
+  {
+    return bcrypt.compareSync(value, hash);
   }
 
   generateOtp(length: number): number 
