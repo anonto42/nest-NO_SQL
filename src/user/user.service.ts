@@ -15,17 +15,10 @@ export class UserService
     async profile( id: string ): Promise<User>
     {
         const user = await this.userModel.findById( id )
-        if( !user )
-        {
-            throw new HttpException('User not found', HttpStatus.NOT_FOUND )
-        }
-        return user
-    }
-    
-    async register( data: CreateUserDto ): Promise<User>
-    {
 
-        return this.userModel.create( data )
+        if( !user )throw new HttpException('User not found', HttpStatus.NOT_FOUND )
+
+        return user
     }
     
 }

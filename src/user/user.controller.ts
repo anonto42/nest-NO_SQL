@@ -15,14 +15,6 @@ export class UserController
         return 'profile';
     }
 
-    @Post('/')
-    register(
-        @Body() createUserDto: CreateUserDto
-    )
-    {
-        return this.userService.register( createUserDto )
-    }
-
     @Put('/')
     update()
     {
