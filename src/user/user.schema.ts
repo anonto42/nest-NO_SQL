@@ -31,7 +31,7 @@ export class User extends Document
   @Prop({
     type: String, 
     required: true, 
-    select: false 
+    // select: false 
   })
   password: string;
 
@@ -92,7 +92,8 @@ export class User extends Document
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function (next) 
+{
   if (this.isModified('password')) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -103,7 +104,14 @@ UserSchema.pre('save', async function (next) {
 UserSchema.statics.comparePassword = async function (
   loginPassword: string,
   storedPassword: string
-): Promise<boolean> {
+): Promise<boolean> 
+{
+  if (!loginPassword || !storedPassword) 
+  {
+    console.error("Invalid password arguments: ", loginPassword, storedPassword);
+    throw new Error("Password comparison failed due to invalid arguments");
+  }
+
   return await bcrypt.compare(loginPassword, storedPassword);
 };
 
