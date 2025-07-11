@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 import { UserRole } from './user.enum';
 
@@ -88,11 +88,6 @@ export class User extends Document
   })
   resetPasswordTokenExpiry?: Date;
 
-  async comparePassword(enteredPassword: string): Promise<boolean> 
-  {
-    return await bcrypt.compare(enteredPassword, this.password);
-  };
-
 };
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -104,3 +99,14 @@ UserSchema.pre('save', async function (next) {
   }
   next();
 });
+
+UserSchema.statics.comparePassword = async function (
+  loginPassword: string,
+  storedPassword: string
+): Promise<boolean> {
+  return await bcrypt.compare(loginPassword, storedPassword);
+};
+
+export interface UserModel extends Model<User> {
+  comparePassword: (loginPassword: string, storedPassword: string) => Promise<boolean>;
+}
