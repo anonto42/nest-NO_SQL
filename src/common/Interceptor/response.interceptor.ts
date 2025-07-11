@@ -8,7 +8,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { ResponseDto } from 'common/DTO/response.dto';
+import { ResponseDto } from 'src/common/DTO/response.dto';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
