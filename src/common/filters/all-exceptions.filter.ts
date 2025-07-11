@@ -7,12 +7,12 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    
+
     const status = exception instanceof HttpException ? exception.getStatus() : 500;
 
     const errorResponse: any = {
       statusCode: status,
-      message: exception.message || 'Internal Server Error', 
+      message: exception.message || 'Internal Server Error',
       error: exception.name || 'Error',
       path: request.url,
       timestamp: new Date().toISOString(),
@@ -26,35 +26,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
       }
     }
 
-    if (exception.name === 'ValidationError') {
-      errorResponse.message = 'Validation failed';
+    // Handling ValidationError explicitly
+    if (exception.name === 'BadRequestException' && exception.message.includes('Validation')) {
+      errorResponse.message = 'Bad Request: The data you provided is invalid.';
       errorResponse.error = 'Bad Request';
-      errorResponse.details = exception.errors || []; 
-    }
-
-    if (exception instanceof HttpException) {
-      switch (status) {
-        case 400:
-          errorResponse.message = 'Bad Request: The data you provided is invalid.';
-          break;
-        case 401:
-          errorResponse.message = 'Unauthorized: You need to log in to access this resource.';
-          break;
-        case 403:
-          errorResponse.message = 'Forbidden: You do not have permission to access this resource.';
-          break;
-        case 404:
-          errorResponse.message = 'Not Found: The requested resource could not be found.';
-          break;
-        case 500:
-        default:
-          errorResponse.message = 'Internal Server Error: Something went wrong on the server.';
-          break;
-      }
+      errorResponse.details = exception.getResponse()['message'] || []; // Get validation errors details
     }
 
     console.error('Error:', exception);
 
+    // Send formatted error response
     response.status(status).json(errorResponse);
   }
 }
