@@ -38,12 +38,13 @@ export class User extends Document
   @Prop({
     type: Number,
     default: 0
-   })
+  })
   age: number;
 
   @Prop({
     enum: UserRole,
-    default: UserRole.USER
+    default: UserRole.USER,
+    required: false
   })
   role: UserRole;
 
@@ -65,11 +66,17 @@ export class User extends Document
   @Prop({
     type: Number,
     default: null,
-    min: [1000, 'OTP must be a 4-digit number!'],  // Minimum value for a 4-digit OTP
-    max: [999999, 'OTP must be a number between 1000 and 999999!'],  // Maximum value for a 6-digit OTP
+    min: [1000, 'OTP must be a 4-digit number!'],
+    max: [999999, 'OTP must be a number between 1000 and 999999!'],
   })
   otp?: number;
 
+  @Prop({
+    default: null,
+    type: Date
+  })
+  otpExpiry?: Date;
+  
   @Prop({
     type: String,
     default: null
