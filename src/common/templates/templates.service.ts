@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class TemplatesService 
 {
 
-    generateOtpTemplate(otp: string, subject: string = 'Your One-Time Password (OTP)', message: string = 'Here is your OTP for verification:'): string 
+    generateOtpTemplate(otp: number, subject: string = 'Your One-Time Password (OTP)', message: string = 'Here is your OTP for verification:'): string 
     {
         const htmlTemplate = `
           <!DOCTYPE html>
