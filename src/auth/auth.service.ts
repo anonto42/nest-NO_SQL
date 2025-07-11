@@ -25,7 +25,7 @@ export class AuthService {
         return user
     }
 
-    async login(loginUserDto: LoginUserDto) 
+    async login(loginUserDto: LoginUserDto): Promise<{ user: User, accessToken: string, refreshToken: string }> 
     {
         const user = await this.userModel.findOne( { email: loginUserDto.email } )
 
@@ -41,4 +41,5 @@ export class AuthService {
 
         return { user, accessToken, refreshToken }
     }
+    
 }
