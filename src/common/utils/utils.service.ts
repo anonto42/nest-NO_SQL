@@ -3,7 +3,7 @@ import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import { TemplatesService } from 'src/common/templates/templates.service';
 import * as jwt from 'jsonwebtoken';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UtilsService 
