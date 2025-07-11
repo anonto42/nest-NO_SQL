@@ -4,7 +4,6 @@ import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UtilsService } from './common/utils/utils.service';
 import { TemplatesService } from './common/templates/templates.service';
-import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 
@@ -21,9 +20,6 @@ import { CommonModule } from './common/common.module';
     UserModule,
     AuthModule,
     CommonModule,
-  ],
-  controllers: [
-    AppController
   ],
   providers: [
     UtilsService,
