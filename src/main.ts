@@ -2,9 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { AllExceptionsFilter } from 'src/common/filters/all-exceptions.filter';
-import { ResponseInterceptor } from 'src/common/Interceptor/response.interceptor';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import { ResponseInterceptor } from './common/Interceptors/response.interceptor';
+import { ValidationPipe } from './common/pipes/validation.pipe';
 
 async function bootstrap() {
 
@@ -21,20 +21,11 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalInterceptors(new ResponseInterceptor());
 
-  // Globall Validation
-  app.useGlobalPipes(new ValidationPipe(
-    { 
-      transform: true, 
-      whitelist: true, 
-      forbidNonWhitelisted: true, 
-      exceptionFactory: (errors) => {
-        const firstError = errors[0];
-        const message = firstError.constraints ? Object.values(firstError.constraints)[0] : 'Validation failed';
-        return new BadRequestException(message);
-      }
-    }
-  ));
+  // Globall Validation Pipes
+  app.useGlobalPipes(new ValidationPipe());
   
+  // Global Guards
+  // app.useGlobalGuards(new JwtGuard());
 
   // Security
   app.enableCors({

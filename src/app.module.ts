@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UtilsService } from './common/utils/utils.service';
 import { TemplatesService } from './common/templates/templates.service';
-import { AuthModule } from './auth/auth.module';
-import { CommonModule } from './common/common.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -26,7 +25,6 @@ import { ThrottlerModule } from '@nestjs/throttler';
     }),
     UserModule,
     AuthModule,
-    CommonModule,
   ],
   providers: [
     UtilsService,

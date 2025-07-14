@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserModel } from 'src/user/user.schema';
 import { ChangePasswordDto, CreateUserDto, ForgotPasswordDto, LoginUserDto, OtpUserDto, RefreshUserDto, VerifyOtpDto } from './auth.dto';
 import { UtilsService } from 'src/common/utils/utils.service';
+import { User, UserModel } from '../user/user.schema';
 
 @Injectable()
 export class AuthService {

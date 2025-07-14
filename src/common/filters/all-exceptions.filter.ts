@@ -1,5 +1,8 @@
 import { Catch, ExceptionFilter, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Logger } from '@nestjs/common';
+
+const logger = new Logger('AllExceptionsFilter');
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -10,7 +13,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const status = exception instanceof HttpException ? exception.getStatus() : 500;
 
+    const errorResponse = this.formatErrorResponse(exception, status, request);
+
+    logger.error(`Error occurred: ${exception.message}`, exception.stack);
+
+    response.status(status).json(errorResponse);
+  }
+
+  private formatErrorResponse(exception: any, status: number, request: Request) {
     const errorResponse: any = {
+      success: false,
       statusCode: status,
       message: exception.message || 'Internal Server Error',
       error: exception.name || 'Error',
@@ -30,12 +42,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (exception.name === 'BadRequestException' && exception.message.includes('Validation')) {
       errorResponse.message = 'Bad Request: The data you provided is invalid.';
       errorResponse.error = 'Bad Request';
-      errorResponse.details = exception.getResponse()['message'] || []; // Get validation errors details
+      errorResponse.details = exception.getResponse()['message'] || [];
     }
 
-    console.error('Error:', exception);
+    if (process.env.NODE_ENV !== 'production') {
+      errorResponse.stack = exception.stack; // Include stack trace in development
+    }
 
-    // Send formatted error response
-    response.status(status).json(errorResponse);
+    return errorResponse;
   }
 }
