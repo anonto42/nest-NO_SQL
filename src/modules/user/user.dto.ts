@@ -1,4 +1,4 @@
-import { UserRole } from "./user.enum";
+import { RoleEnum } from "../../common/enum/user.enum";
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class UpdateUserDto 
@@ -7,7 +7,7 @@ export class UpdateUserDto
     email?: string;
     age?: number;
     password?: string;
-    role?: UserRole;
+    role?: RoleEnum;
     avatar?: string;
 }
   
