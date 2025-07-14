@@ -5,6 +5,7 @@ import { AllExceptionsFilter } from 'src/common/filters/all-exceptions.filter';
 import helmet from 'helmet';
 import { ResponseInterceptor } from './common/Interceptors/response.interceptor';
 import { ValidationPipe } from './common/pipes/validation.pipe';
+import { VersioningType } from '@nestjs/common';
 
 async function bootstrap() {
 
@@ -16,6 +17,10 @@ async function bootstrap() {
   // Global Prefix
   app.setGlobalPrefix('api');
 
+  // Versioning
+  app.enableVersioning({
+    type: VersioningType.URI,
+  });
 
   // Error & Response Interceptors
   app.useGlobalFilters(new AllExceptionsFilter());
