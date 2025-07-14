@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UtilsService } from './common/utils/utils.service';
 import { TemplatesService } from './common/templates/templates.service';
@@ -8,6 +8,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { JwtAuthGuard } from './common/guards/jwt.guard';
 import { RolesGuard } from './common/guards/roles.guard';
+import { DatabaseService } from './database/database.service';
 
 @Module({
   imports: [
@@ -21,13 +22,23 @@ import { RolesGuard } from './common/guards/roles.guard';
     DatabaseModule,
     UserModule,
     AuthModule,
+    DatabaseModule
   ],
   providers: [
     UtilsService,
     TemplatesService,
     JwtAuthGuard,
-    RolesGuard,
+    RolesGuard
   ],
 })
 
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+
+  constructor(
+    private readonly databaseService: DatabaseService
+  ) {}
+
+  async onModuleInit() {
+    await this.databaseService.createSuperAdmin();
+  }
+}

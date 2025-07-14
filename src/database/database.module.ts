@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ConfigModule, ConfigService } from '@nestjs/config';import { DatabaseService } from './database.service';
-;
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { DatabaseService } from './database.service';
+import { User, UserSchema } from 'src/modules/user/user.schema';
+
 
 @Module({
   imports: [
@@ -12,6 +14,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';import { DatabaseSe
         uri: configService.get<string>('MONGODB_URI'),
       }),
     }),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+    ]),
   ],
   providers: [DatabaseService],
   exports: [DatabaseService]
