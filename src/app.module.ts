@@ -6,6 +6,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { DatabaseModule } from './database/database.module';
+import { JwtAuthGuard } from './common/guards/jwt.guard';
+import { RolesGuard } from './common/guards/roles.guard';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { DatabaseModule } from './database/database.module';
   providers: [
     UtilsService,
     TemplatesService,
+    JwtAuthGuard,
+    RolesGuard,
   ],
 })
 
