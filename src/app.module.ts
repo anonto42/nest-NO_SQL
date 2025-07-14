@@ -1,4 +1,4 @@
-import { INestApplication, Module, VersioningType } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { UtilsService } from './common/utils/utils.service';
 import { TemplatesService } from './common/templates/templates.service';
