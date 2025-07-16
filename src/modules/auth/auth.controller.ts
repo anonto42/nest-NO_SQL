@@ -1,9 +1,17 @@
-import { Body, Controller, Post, Version } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards, Version } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ChangePasswordDto, CreateUserDto, ForgotPasswordDto, LoginUserDto, OtpUserDto, RefreshUserDto, VerifyOtpDto } from './auth.dto';
+import { IpThrottlerGuard } from 'src/common/guards/ip.throttler.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { RoleEnum } from 'src/common/enum/user.enum';
+import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { JwtThrottlerGuard } from 'src/common/guards/jwt.throttler.guard';
 import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
+@UseGuards(IpThrottlerGuard) 
+@Throttle({ default: { limit: 5, ttl: 60000 } })
 export class AuthController {
     constructor(
         private readonly authService: AuthService,
@@ -30,7 +38,6 @@ export class AuthController {
         return this.authService.refresh(refreshDto);
     }
 
-    @Throttle({ default: { limit: 1, ttl: 60000 } })
     @Version("1")
     @Post('otp')
     async otp(@Body() otpDto: OtpUserDto) 
@@ -38,7 +45,6 @@ export class AuthController {
         return this.authService.otp(otpDto);
     }
 
-    @Throttle({ default: { limit: 1, ttl: 60000 } })
     @Version("1")
     @Post('verify-otp')
     async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto) 
@@ -46,7 +52,6 @@ export class AuthController {
         return this.authService.verifyOtp(verifyOtpDto);
     }
 
-    @Throttle({ default: { limit: 1, ttl: 60000 } })
     @Version("1")
     @Post('forgot-password')
     async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) 
@@ -54,11 +59,14 @@ export class AuthController {
         return this.authService.forgotPassword(forgotPasswordDto);
     }
 
-    @Throttle({ default: { limit: 1, ttl: 60000 } })
     @Version("1")
     @Post('change-password')
-    async changePassword(@Body() changePasswordDto: ChangePasswordDto) 
+    @Roles(RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN, RoleEnum.USER)
+    @UseGuards(JwtAuthGuard, RolesGuard, JwtThrottlerGuard)
+    async changePassword( @Body() changePasswordDto: ChangePasswordDto, @Req() req: any ) 
     {
-        return this.authService.changePassword(changePasswordDto);
+        const user = req.user;
+        
+        return this.authService.changePassword(user, changePasswordDto);
     }
 }
