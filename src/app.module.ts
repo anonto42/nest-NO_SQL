@@ -9,13 +9,14 @@ import { DatabaseModule } from './database/database.module';
 import { JwtAuthGuard } from './common/guards/jwt.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { DatabaseService } from './database/database.service';
+import { IpThrottlerGuard } from './common/guards/ip.throttler.guard';
 
 @Module({
   imports: [
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
-        limit: 10,
+        limit: 100,
       },
     ]),
     ConfigModule.forRoot({ isGlobal: true, envFilePath: ".env" }),
@@ -28,7 +29,8 @@ import { DatabaseService } from './database/database.service';
     UtilsService,
     TemplatesService,
     JwtAuthGuard,
-    RolesGuard
+    RolesGuard,
+    IpThrottlerGuard
   ],
 })
 
