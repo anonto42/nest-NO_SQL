@@ -4,6 +4,7 @@ import { JwtAuthGuard } from 'src/common/guards/jwt.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { RoleEnum } from 'src/common/enum/user.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
+import { JwtThrottlerGuard } from 'src/common/guards/jwt.throttler.guard';
 
 @Controller('user')
 export class UserController 
@@ -12,9 +13,10 @@ export class UserController
         private readonly userService: UserService,
     ){}
 
-    @UseGuards(JwtAuthGuard)
     @Version("1")
     @Get('/')
+    @Roles(RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN, RoleEnum.USER)
+    @UseGuards(JwtAuthGuard, RolesGuard, JwtThrottlerGuard)
     profile( @Req() req: any)
     {
         return req.user;
@@ -23,7 +25,7 @@ export class UserController
     @Version("1")
     @Post('/')
     @Roles(RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN, RoleEnum.USER)
-    @UseGuards( JwtAuthGuard, RolesGuard )
+    @UseGuards( JwtAuthGuard, RolesGuard, JwtThrottlerGuard )
     admin(@Body() body: any)
     {
         return body;
