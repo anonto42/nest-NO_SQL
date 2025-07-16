@@ -10,15 +10,21 @@ export class CreateUserDto
     @IsEmail({},{ message: 'Email must be a valid email' })
     email: string;
 
-    @IsNotEmpty({ message: 'Age is required' })
-    age: number;
+    @IsNotEmpty({ message: 'Phone is required' })
+    phone: string;
+
+    @IsNotEmpty({ message: 'Location is required' })
+    location: string;
 
     @IsNotEmpty({ message: 'Password is required' })
     password: string;
 
-    @IsString({ message: 'Avatar must be a string' })
-    @IsOptional()
-    avatar?: string;
+    @IsNotEmpty({ message: 'Confirm Password is required' })
+    confirm_password: string;
+
+    // @IsString({ message: 'Avatar must be a string' })
+    // @IsOptional()
+    // avatar?: string;
 }
 
 export class LoginUserDto 
@@ -39,9 +45,13 @@ export class ChangePasswordDto
     @IsNotEmpty({ message: 'Password is required' })
     password: string;
 
+    @IsString({ message: 'old password must be a string' })
+    @IsNotEmpty({ message: 'old password is required' })
+    old_password: string;
+
     @IsString({ message: 'Confirm password must be a string' })
     @IsNotEmpty({ message: 'Confirm password is required' })
-    confirmPassword: string;
+    confirm_password: string;
 }
 
 export class RefreshUserDto 
@@ -81,7 +91,7 @@ export class ForgotPasswordDto
 
     @IsString({ message: 'Confirm password must be a string' })
     @IsNotEmpty({ message: 'Confirm password is required' })
-    confirmPassword: string;
+    confirm_password: string;
 
     @IsString({ message: 'Token must be a string' })
     @IsNotEmpty({ message: 'Token is required' })
